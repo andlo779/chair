@@ -10,15 +10,18 @@ var users = require('./routes/users');
 var records = require('./routes/records');
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/chair', function(err) {
-    if(err) {
-        console.log('connection error', err);
-    } else {
-        console.log('connection to DB successful');
-    }
-});
+
+var config = require('./_config')
 
 var app = express();
+
+mongoose.connect(config.mongoURI[app.get('env')], function(err, res) {
+  if(err) {
+    console.log('Error connecting to the database. ' + err);
+  } else {
+    console.log('Connected to Database: ' + config.mongoURI[app.get('env')]);
+  }
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
