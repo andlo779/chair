@@ -20,7 +20,7 @@ router.get('/', function(req, res, next) {
   })
 });
 
-/* GET one record. */
+/* GET single record. */
 router.get('/:id', function(req, res, next) {
 	record.findById(req.params.id, function(err, record) {
 		if (err) return next(err);
@@ -28,15 +28,15 @@ router.get('/:id', function(req, res, next) {
 	})
 })
 
-/* PUT one record. */
+/* PUT single record. */
 router.put('/:id', function(req, res, next) {
-  record.findByIdAndUpdate(req.params.id, req.body, function(err, post) {
+  record.findByIdAndUpdate(req.params.id, req.body, { new: true }, function(err, post) {
 		if (err) return next(err);
 		res.json(post);
 	})
 })
 
-/* DELETE one record. */
+/* DELETE single record. */
 router.delete('/:id', function(req, res, next) {
   record.findByIdAndRemove(req.params.id, req.body, function(err, post) {
   	if (err) return next(err);
