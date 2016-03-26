@@ -7,10 +7,10 @@ var UserSchema = new mongoose.Schema({
 	role: { type: String, enum: ['user', 'admin'] , default: 'user' }
 });
 
-UserSchema.pre('save', function (next) {
+UserSchema.pre('save', function(next) {
   var user = this;
   if (this.isModified('password') || this.isNew) {
-    bcrypt.genSalt(10, function (err, salt) {
+    bcrypt.genSalt(10, function(err, salt) {
       if (err) {
         return next(err);
       }
@@ -27,8 +27,8 @@ UserSchema.pre('save', function (next) {
   }
 });
 
-UserSchema.methods.comparePassword = function(pw, callback) {
-  bcrypt.compare(pw, this.password, function(err, isMatch) {
+UserSchema.methods.comparePassword = function(password, callback) {
+  bcrypt.compare(password, this.password, function(err, isMatch) {
     if (err) {
       return callback(err);
     }

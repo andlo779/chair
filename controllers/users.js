@@ -7,7 +7,8 @@ var User = require('../models/user.js');
 var router = express.Router();
 
 /* POST one user. */
-router.post('/', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+// router.post('/', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+  router.post('/', function(req, res, next) {
 	if(!req.body.username || !req.body.password) {
     res.status(400).json({ success: false, message: 'Please enter username and password.' });
   } else {
@@ -15,7 +16,6 @@ router.post('/', passport.authenticate('jwt', { session: false }), function(req,
       username: req.body.username,
       password: req.body.password
     });
-    // Attempt to save the user
     newUser.save(function(err) {
       if (err) {
         return res.status(400).json({ success: false, message: err.message});

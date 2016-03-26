@@ -59,7 +59,7 @@ describe('Users', function() {
       username: username,
       password: password
     });
-    singleuser.save( singleuser, function(err, data) {
+    singleuser.save(function(err, data) {
       chai.request(server)
         .get('/users/'+data.id)
         .set('Authorization', token)
@@ -104,7 +104,7 @@ describe('Users', function() {
       username: username,
       password: password
     });
-    singleuser.save( singleuser, function(err, data) {
+    singleuser.save(function(err, data) {
       chai.request(server)
         .post('/users')
         .set('Authorization', token)

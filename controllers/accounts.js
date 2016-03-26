@@ -8,16 +8,14 @@ var router = express.Router();
 
 
 router.post('/authenticate', function(req, res, next) {
-	User.findOne({ username: req.body.username }, function(err, user) {
+	User.findOne({ username: req.body.username }, '+password', function(err, user) {
       if (err) return next(err);
 
       if (!user) {
         res.status(401).json({ success: false, message: 'Authentication failed. User not found.' });
       } else {
-        // Check if password matches
         user.comparePassword(req.body.password, function(err, isMatch) {
           if (isMatch && !err) {
-            // Create token if the password matched and no error was thrown
             var token = jwt.sign(user, config.jwt.secret, {
               expiresIn: config.jwt.token_ttl
             });
@@ -30,9 +28,25 @@ router.post('/authenticate', function(req, res, next) {
     });
 });
 
-router.post('/changePassword', passport.authenticate('jwt', { session: false }), function(req, res, next) {
-
-	res.json('Not implemente yet!');
+router.post('/changePassword/:id', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+  if(!req.body.password) {
+    res.status(400).json({ success: false, message: 'Please enter new password.' });
+  } else {
+    User.findById(req.params.id, function(err, user) {
+      if(err) {
+        return next(err);
+      }
+      if(!user) {
+        res.status(400).json({ sucess: false, message: 'User not found for id: ' + req.params.id });
+      } else {
+        user.password = req.body.password;
+        user.save(function(error) {
+          if(error) return next(error);
+        	res.status(200).json({ sucess: true, message: 'Password have been updated for user: ' + req.params.id });
+        })
+      }
+    })
+  }
 })
 
 router.post('/invalidatetoken', function(req, res, next) {
