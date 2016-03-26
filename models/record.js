@@ -6,4 +6,4 @@ var recordSchema = new mongoose.Schema({
   updated_at: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('record', recordSchema);
+module.exports = mongoose.model('Record', recordSchema);
