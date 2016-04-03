@@ -1,6 +1,6 @@
 var express = require('express');
-var passport = require('passport');
 var jwt = require('jsonwebtoken');
+var authorization = require('../middlewares/authenticate');
 var config = require('../_config');
 var User = require('../models/user');
 
@@ -16,10 +16,11 @@ router.post('/authenticate', function(req, res, next) {
       } else {
         user.comparePassword(req.body.password, function(err, isMatch) {
           if (isMatch && !err) {
+            user.password = undefined;
             var token = jwt.sign(user, config.jwt.secret, {
               expiresIn: config.jwt.token_ttl
             });
-            res.status(200).json({ success: true, token: 'JWT ' + token });
+            res.status(200).json({ success: true, token: token });
           } else {
             res.status(401).json({ success: false, message: 'Authentication failed. Passwords did not match.' });
           }
@@ -28,7 +29,7 @@ router.post('/authenticate', function(req, res, next) {
     });
 });
 
-router.post('/changePassword/:id', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+router.post('/changePassword/:id', authorization.roleUser(), function(req, res, next) {
   if(!req.body.password) {
     res.status(400).json({ success: false, message: 'Please enter new password.' });
   } else {
@@ -51,12 +52,6 @@ router.post('/changePassword/:id', passport.authenticate('jwt', { session: false
 
 router.post('/invalidatetoken', function(req, res, next) {
 	//ToDo - Keep invalidated tokens in new DB table + update validation logic to check new DB table
-})
-
-
-router.get('/bajs', function(req, res, next) {
-	// if (err) return next(err);
-	res.json('Hej');
 })
 
 module.exports = router;

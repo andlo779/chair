@@ -3,9 +3,10 @@ var router = express.Router();
 
 var mongoose = require('mongoose');
 var record = require('../models/record.js');
+var authorization = require('../middlewares/authenticate');
 
 /* POST one record. */
-router.post('/', function(req, res, next) {
+router.post('/', authorization.roleAdmin(), function(req, res, next) {
 	record.create(req.body, function(err, post) {
 		if (err) return next(err);
 		res.json(post);
@@ -13,7 +14,7 @@ router.post('/', function(req, res, next) {
 })
 
 /* GET all records. */
-router.get('/', function(req, res, next) {
+router.get('/', authorization.roleUser(), function(req, res, next) {
   record.find(function(err, records) {
   	if (err) return next(err);
   	res.json(records);
@@ -21,7 +22,7 @@ router.get('/', function(req, res, next) {
 });
 
 /* GET single record. */
-router.get('/:id', function(req, res, next) {
+router.get('/:id', authorization.roleUser(), function(req, res, next) {
 	record.findById(req.params.id, function(err, record) {
 		if (err) return next(err);
 		res.json(record);
@@ -29,7 +30,7 @@ router.get('/:id', function(req, res, next) {
 })
 
 /* PUT single record. */
-router.put('/:id', function(req, res, next) {
+router.put('/:id', authorization.roleUser(), function(req, res, next) {
   record.findByIdAndUpdate(req.params.id, req.body, { new: true }, function(err, post) {
 		if (err) return next(err);
 		res.json(post);
@@ -37,7 +38,7 @@ router.put('/:id', function(req, res, next) {
 })
 
 /* DELETE single record. */
-router.delete('/:id', function(req, res, next) {
+router.delete('/:id', authorization.roleAdmin(), function(req, res, next) {
   record.findByIdAndRemove(req.params.id, req.body, function(err, post) {
   	if (err) return next(err);
   	res.json(post);

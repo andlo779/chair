@@ -5,8 +5,6 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
 var cors = require('cors');
 
 var users = require('./controllers/users');
@@ -30,8 +28,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cors());
 
-app.use(passport.initialize());
-require('./passport')(passport);
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/users', users);

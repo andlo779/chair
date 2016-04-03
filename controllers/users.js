@@ -1,14 +1,11 @@
 var express = require('express');
-var passport = require('passport');
-var passport = require('passport');
 var jwt = require('jsonwebtoken');
 var User = require('../models/user.js');
-
+var authorization = require('../middlewares/authenticate');
 var router = express.Router();
 
 /* POST one user. */
-// router.post('/', passport.authenticate('jwt', { session: false }), function(req, res, next) {
-  router.post('/', function(req, res, next) {
+router.post('/', function(req, res, next) {
 	if(!req.body.username || !req.body.password) {
     res.status(400).json({ success: false, message: 'Please enter username and password.' });
   } else {
@@ -26,7 +23,7 @@ var router = express.Router();
 })
 
 /* GET all users. */
-router.get('/', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+router.get('/', authorization.roleUser(), function(req, res, next) {
   User.find(function(err, users) {
   	if (err) return next(err);
   	res.json(users);
@@ -34,7 +31,7 @@ router.get('/', passport.authenticate('jwt', { session: false }), function(req, 
 });
 
 /* GET single user. */
-router.get('/:id', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+router.get('/:id', authorization.roleUser(), function(req, res, next) {
 	User.findById(req.params.id, function(err, user) {
 		if (err) return next(err);
 		res.json(user);
@@ -50,7 +47,7 @@ router.get('/:id', passport.authenticate('jwt', { session: false }), function(re
 // })
 
 /* DELETE single user. */
-router.delete('/:id', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+router.delete('/:id', authorization.roleAdmin(), function(req, res, next) {
   User.findByIdAndRemove(req.params.id, req.body, function(err, post) {
   	if (err) return next(err);
   	res.json(post);
