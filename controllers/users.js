@@ -1,7 +1,7 @@
 var express = require('express');
 var jwt = require('jsonwebtoken');
 var User = require('../models/user.js');
-var authorization = require('../middlewares/authenticate');
+var authorization = require('../middlewares/authenticateToken');
 var router = express.Router();
 
 /* POST one user. */
@@ -9,18 +9,21 @@ router.post('/', function(req, res, next) {
 	if(!req.body.username || !req.body.password) {
     res.status(400).json({ success: false, message: 'Please enter username and password.' });
   } else {
-    var newUser = new User({
-      username: req.body.username,
-      password: req.body.password
-    });
-    newUser.save(function(err) {
+    // var newUser = new User({
+    //   username: req.body.username,
+    //   password: req.body.password
+    // });
+    // newUser.save(function(err) {
+      User({username: req.body.username, password: req.body.password}).save(function(err) {
       if (err) {
         return res.status(400).json({ success: false, message: err.message});
-      }
+      };
       res.status(201).json({ success: true, message: 'Successfully created new user.' });
     });
   }
 })
+
+
 
 /* GET all users. */
 router.get('/', authorization.roleUser(), function(req, res, next) {
@@ -33,7 +36,12 @@ router.get('/', authorization.roleUser(), function(req, res, next) {
 /* GET single user. */
 router.get('/:id', authorization.roleUser(), function(req, res, next) {
 	User.findById(req.params.id, function(err, user) {
-		if (err) return next(err);
+		if (err) {
+     if(err.name === "CastError")
+      return res.status(404).json({ sucess: false, message: 'User not found'});
+
+    return next(err);
+    }
 		res.json(user);
 	})
 })

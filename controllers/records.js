@@ -3,7 +3,7 @@ var router = express.Router();
 
 var mongoose = require('mongoose');
 var record = require('../models/record.js');
-var authorization = require('../middlewares/authenticate');
+var authorization = require('../middlewares/authenticateToken');
 
 /* POST one record. */
 router.post('/', authorization.roleAdmin(), function(req, res, next) {

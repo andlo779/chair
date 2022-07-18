@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "auto-run": "nodemon ./bin/www"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,7 @@
     "mongodb": "2.1.7",
     "mongoose": "4.4.7",
     "morgan": "~1.6.1",
+    "node-uuid": "^1.4.7",
     "passport": "^0.3.2",
     "passport-jwt": "^2.0.0",
     "serve-favicon": "~2.3.0"

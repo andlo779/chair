@@ -26,7 +26,7 @@ describe('Accounts', function() {
       password: password
     });
     newuser.save(function(err) {
-      token = 'JWT ' + jwt.sign(newuser, config.jwt.secret, {
+      token = jwt.sign(newuser, config.jwt.secret, {
         expiresIn: config.jwt.token_ttl
       });
       done();
